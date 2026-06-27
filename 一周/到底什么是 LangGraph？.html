@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>纯 Agent 开发岗特训：核心认知与工程化约束</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chosen Palette: Warm Neutrals (Stone base, Amber/Orange accents) for a calm, professional learning environment -->
+<!-- Application Structure Plan: A single-page scrollable dashboard with sticky navigation. It transforms a text-heavy study guide into interactive learning modules (Radar Chart for paradigm shift, Tabs for reasoning frameworks, Interactive Diagnoser for error handling). This structure facilitates active learning rather than passive reading, allowing users to drill down into specific engineering concepts. -->
+<!-- Visualization & Content Choices: 1. Core Shift -> Radar Chart (Chart.js) -> Compare Traditional vs Agent Dev. 2. Reasoning Paradigms -> Interactive Tabs (HTML/JS) -> Avoid cognitive overload. 3. Error Diagnosis -> Interactive Simulator (HTML/JS) -> Practical application of tool calling concepts. NO SVG/Mermaid used, entirely reliant on standard HTML/CSS and Canvas. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<style>
+.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 350px; } }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+.tab-btn.active { border-bottom-color: #d97706; color: #d97706; font-weight: 600; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.code-block { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+</style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased leading-relaxed">
+
+<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex-shrink-0 flex items-center gap-2">
+                <span class="text-2xl">🧠</span>
+                <span class="font-bold text-xl tracking-tight text-stone-900">AgentDev <span class="text-amber-600">Bootcamp</span></span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#cognition" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">核心认知重塑</a>
+                <a href="#day1" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">推理与决策 (Day 1)</a>
+                <a href="#day2" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">工具工程化 (Day 2)</a>
+                <a href="#day3" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">工作流编排 (Day 3)</a>
+                <a href="#collaboration" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">协同闭环</a>
+                <a href="#resume" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">简历提炼</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+    <header class="text-center py-12 bg-white rounded-3xl shadow-sm border border-stone-100">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-4 tracking-tight">纯 Agent 开发岗特训</h1>
+        <p class="text-lg md:text-xl text-stone-500 max-w-3xl mx-auto">从平台使用者到<span class="text-amber-600 font-semibold">底层执行引擎构建者</span>的视角跨越。掌握如何在 Node.js 环境中驾驭大模型的非确定性，构建稳定、可预测的工作流系统。</p>
+    </header>
+
+    <section id="cognition" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">一、 核心认知重塑</h2>
+            <p class="text-stone-600 mt-2">本部分旨在对比传统后端开发与纯 Agent 开发的技能差异。通过下方的雷达图，您可以直观地看到：我们必须剥离简单的“增删改查”和“一问一答”模式，将重心转移到处理模型非确定性、提示词工程以及上下文管理上。</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10 flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1 space-y-4">
+                <h3 class="text-xl font-bold text-stone-800">技能图谱范式转移</h3>
+                <p class="text-stone-600">纯 Agent 开发不再是写普通的 RESTful API 或进行 CRUD 操作。你的核心任务是：<strong class="text-amber-700">驾驭大模型的非确定性（幻觉、格式错误等），构建出稳定、可预测的工作流系统。</strong></p>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <div class="text-sm text-stone-500 font-semibold mb-1">传统后端侧重</div>
+                        <div class="text-stone-800 font-medium">确定性逻辑、数据结构、性能调优</div>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                        <div class="text-sm text-amber-700 font-semibold mb-1">Agent 开发侧重</div>
+                        <div class="text-amber-900 font-medium">容错兜底、提示词约束、流程编排</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 w-full">
+                <div class="chart-container">
+                    <canvas id="skillRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="day1" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">二、 Day 1 核心：智能体的推理与决策机制</h2>
+            <p class="text-stone-600 mt-2">面试官最关心的首要问题：你是否理解 Agent 是如何思考和行动的？本节通过交互式选项卡，详细拆解了工业界最常用的三种推理策略。点击下方标签页探索不同的工作流机制。</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+            <div class="flex border-b border-stone-200 bg-stone-50/50 overflow-x-auto">
+                <button class="tab-btn active px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="react-tab">1. ReAct 范式</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="plan-tab">2. Plan-and-Solve</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="reflect-tab">3. Self-Reflection</button>
+            </div>
+
+            <div class="p-6 md:p-10 min-h-[300px]">
+                <div id="react-tab" class="tab-content active">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">🔄</span> ReAct (Reason + Act) 基础运行逻辑</h3>
+                    <p class="text-stone-600 mb-6">工业界最基础的 Agent 运行逻辑。大模型不能直接执行动作，必须先输出思考过程。在 Node.js 中，这本质上是一个被代码控制的 <code>while</code> 循环状态机。</p>
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-center bg-stone-50 p-6 rounded-xl border border-stone-200">
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">1. Thought (思考)</div>
+                            <div class="text-sm text-stone-600">模型分析现状，决定下一步动作。</div>
+                        </div>
+                        <div class="text-stone-400 font-bold hidden md:block">➔</div>
+                        <div class="text-stone-400 font-bold md:hidden">⬇</div>
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">2. Action (行动)</div>
+                            <div class="text-sm text-stone-600">模型输出需要调用的工具和参数。</div>
+                        </div>
+                        <div class="text-stone-400 font-bold hidden md:block">➔</div>
+                        <div class="text-stone-400 font-bold md:hidden">⬇</div>
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">3. Observation (观察)</div>
+                            <div class="text-sm text-stone-600">Node.js 执行工具后，返回结果给模型。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="plan-tab" class="tab-content">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">📋</span> Plan-and-Solve (计划与解决)</h3>
+                    <p class="text-stone-600 mb-6">针对宏大或复杂任务的策略。核心动作是**任务拆解 (Task Decomposition)**。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                            <div class="font-bold text-lg text-stone-800 mb-2">阶段一：大模型 Planner</div>
+                            <p class="text-sm text-stone-600 mb-4">让大模型作为 Planner，输出包含多个子任务的结构化 JSON 数组。</p>
+                            <div class="bg-stone-800 text-green-400 p-3 rounded-lg text-xs code-block">
+                                [
+                                  {"step": 1, "task": "搜索相关资料"},
+                                  {"step": 2, "task": "提取关键数据"}
+                                ]
+                            </div>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                            <div class="font-bold text-lg text-stone-800 mb-2">阶段二：Node.js Executor</div>
+                            <p class="text-sm text-stone-600">Node.js 作为 Executor，维护一个任务队列，调度底层的 Worker Agent 逐一执行子任务，汇总结果。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reflect-tab" class="tab-content">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">🛡️</span> Self-Reflection (自我反思与纠错)</h3>
+                    <p class="text-stone-600 mb-6">区分玩具项目与工业级系统的关键：为 Agent 添加系统级异常捕获机制。应对外部 API 崩溃、工具调用超时、大模型参数解析失败等痛点。</p>
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 border-l-4 border-l-amber-500">
+                        <h4 class="font-bold text-amber-900 mb-2">兜底策略 (Node.js 层面)</h4>
+                        <p class="text-amber-800">绝对不要将错误直接抛给用户。Node.js 捕获异常后，将错误信息（Error Stack）或自定义提示词封装成 <code>Observation</code>，附加<strong class="font-bold">“执行失败，请分析原因并重试”</strong>的指令，再次提交给大模型，触发其自我纠正。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="day2" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">三、 Day 2 核心：工具调用 (Tool Calling) 极致工程化</h2>
+            <p class="text-stone-600 mt-2">如果说 ReAct 是 Agent 的大脑，那么 Tool Calling 及其背后的 JSON Schema 就是 Agent 的手脚和数据契约。本节包含了概念对比、代码结构解析以及一个交互式错误诊断器，帮助您理解如何处理模型约束失败的情况。</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                <h3 class="text-lg font-bold text-stone-800 mb-4 border-b border-stone-100 pb-2">核心控制维度对比</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-100 text-blue-700 p-2 rounded-lg mt-1">🗣️</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Prompt (提示词)</div>
+                            <p class="text-sm text-stone-600">给大模型“洗脑”的自然语言，决定模型<strong>怎么思考</strong>。它是灵活的、逻辑驱动的。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg mt-1">📄</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Schema (数据模式)</div>
+                            <p class="text-sm text-stone-600">代码与大模型的“数据契约”，特指 JSON Schema，决定模型<strong>怎么向 Node.js 输出结构化数据</strong>。它是死板的、严谨的、不可违背的。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 flex flex-col">
+                <h3 class="text-lg font-bold text-stone-800 mb-4 border-b border-stone-100 pb-2">实战：诊断“AI 回答 14”的边界情况</h3>
+                <p class="text-sm text-stone-600 mb-4">在 Node.js 后端调试时，导致崩溃的边界情况通常分为两种。请选择出现的现象查看诊断结果：</p>
+                
+                <select id="diagnosisSelect" class="w-full bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-3 mb-4 outline-none">
+                    <option value="none">-- 请选择报错现象 --</option>
+                    <option value="caseA">现象 A：返回体中只有 content="14"，没有 tool_calls</option>
+                    <option value="caseB">现象 B：触发了 tool_calls，但参数变成了字符串 "14"</option>
+                </select>
+
+                <div id="diagnosisResult" class="flex-1 bg-stone-50 rounded-xl p-4 border border-stone-200 hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-stone-900 rounded-2xl shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-stone-700 flex justify-between items-center bg-stone-800">
+                <h3 class="text-stone-200 font-bold text-sm tracking-wider uppercase">JSON Schema: Tool Definition 实战解剖</h3>
+                <span class="text-stone-400 text-xs">get_current_weather.json</span>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <pre class="text-sm text-stone-300 code-block leading-relaxed">
+{
+  "type": "function",
+  "function": {
+    <span class="text-amber-400">"name"</span>: "get_current_weather", <span class="text-stone-500 ml-4"># 后端的路由 Key，必须唯一且无空格</span>
+    <span class="text-amber-400">"description"</span>: "获取指定城市的天气...", <span class="text-stone-500 ml-4"># 隐形的 Prompt，告诉模型何时调用</span>
+    <span class="text-amber-400">"parameters"</span>: {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "城市或地区的名称"
+        },
+        "unit": {
+          "type": "string",
+          <span class="text-emerald-400">"enum"</span>: ["celsius", "fahrenheit"], <span class="text-stone-500 ml-4"># 枚举防抖：强制模型只能在选项中选择</span>
+          "description": "温度单位"
+        }
+      },
+      <span class="text-emerald-400">"required"</span>: ["location", "unit"] <span class="text-stone-500 ml-4"># 必填项防漏：防止 Node.js 获取 undefined</span>
+    }
+  }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="defense" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">2.2 防御体系：格式幻觉与基石组件</h2>
+            <p class="text-stone-600 mt-2">如何彻底解决大模型不按套路出牌的“格式幻觉”？你需要理解 API、校验库等基础设施，并构建坚不可摧的三道防线。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- 基础设施比喻 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                <h3 class="text-lg font-bold text-stone-800 mb-4 flex items-center gap-2"><span class="text-xl">🏗️</span> 基础设施生动隐喻</h3>
+                <div class="space-y-4">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <div class="font-bold text-amber-700 flex items-center gap-2">💁‍♂️ API (接口) = 餐厅服务员</div>
+                        <p class="text-sm text-stone-600 mt-2">不同系统间传递数据的小哥。你（Node.js）不能直闯大模型机房，只能把需求交给服务员（大模型 API）；大模型要做事，也要让服务员（外部 API）去跑腿获取外部信息。</p>
+                    </div>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <div class="font-bold text-emerald-700 flex items-center gap-2">🛡️ 数据校验库 (如 Zod) = 夜店严厉保安</div>
+                        <p class="text-sm text-stone-600 mt-2">守在 Node.js 核心代码门口的保安。大模型传回的数据如果不符合要求（如要求数字14却给了汉字“十四”），Zod 会立刻拦截并抛出精准的报错原因，绝不让脏数据搞崩后端系统。</p>
+                    </div>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <div class="font-bold text-blue-700 flex items-center gap-2">🧋 Enum (枚举) = 奶茶甜度单选框</div>
+                        <p class="text-sm text-stone-600 mt-2">限定取值范围（如 <code>["celsius", "fahrenheit"]</code>）。就像奶茶店的下拉菜单，不让大模型随性发挥填“摄氏”或“度”，从源头掐断捏造数据的格式幻觉。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 格式幻觉三道防线 -->
+            <div class="bg-stone-900 rounded-2xl shadow-sm border border-stone-800 p-6 flex flex-col text-stone-200">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2"><span class="text-xl">🦠</span> 击溃“格式幻觉”的三道防线</h3>
+                <p class="text-sm text-stone-400 mb-6">格式幻觉主要包括：类型叛逆(字串当数字)、偷工减料(漏字段)、无视边界(瞎编枚举)。解决它们需要组合拳：</p>
+                <div class="space-y-6 flex-1">
+                    <div class="border-l-2 border-stone-600 pl-4 relative">
+                        <div class="absolute w-3 h-3 bg-stone-600 rounded-full -left-[7px] top-1.5"></div>
+                        <div class="font-bold text-stone-100">第一道防线：Prompt 级软约束 (示范)</div>
+                        <p class="text-sm text-stone-400 mt-1">在 System Prompt 里直接给大模型贴一个标准 JSON 答案示例（Few-Shot）。大模型是模仿大师，看到例子就不容易发散错误。</p>
+                    </div>
+                    <div class="border-l-2 border-amber-500 pl-4 relative">
+                        <div class="absolute w-3 h-3 bg-amber-500 rounded-full -left-[7px] top-1.5 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></div>
+                        <div class="font-bold text-amber-400">第二道防线：Schema 级硬约束 (锁死)</div>
+                        <p class="text-sm text-stone-400 mt-1">利用 Enum 和 Required 字段锁死选项范围。结合目前最新 API 提供的 <code>strict: true</code> (结构化输出模式)，在底层物理层面上限制大模型乱吐 Token。</p>
+                    </div>
+                    <div class="border-l-2 border-emerald-500 pl-4 relative">
+                        <div class="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[7px] top-1.5 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                        <div class="font-bold text-emerald-400">第三道防线：Zod 拦截 + 自我反思 (兜底)</div>
+                        <p class="text-sm text-stone-400 mt-1">Node.js 收到数据后先交由 Zod 校验。一旦校验失败捕获异常，将报错信息打包成 Observation 发回给大模型：“格式有误，缺少必填字段X，请修正重试。”强制其自我纠错。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="collaboration" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">2.5 核心串联：大脑与手脚的协同闭环</h2>
+            <p class="text-stone-600 mt-2">你问到了最关键的问题：前两天的概念是如何在一起工作的？我们把 Day 1 的“大脑推理”和 Day 2 的“数据契约”融合到一个真实的 Node.js 请求生命周期中。</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10 relative">
+            <div class="absolute left-6 md:left-1/2 top-10 bottom-10 w-1 bg-stone-100 -ml-0.5 md:transform md:-translate-x-1/2"></div>
+            
+            <div class="space-y-12 relative z-10">
+                <!-- 步骤 1 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 text-left md:text-right order-2 md:order-1">
+                        <h4 class="font-bold text-stone-800 text-lg">1. 规则下发 (Node.js)</h4>
+                        <p class="text-sm text-stone-600 mt-1">Node.js 构造请求体：用 <strong>Prompt (Day 2)</strong> 设定 ReAct 思考规则，用 <strong>Schema (Day 2)</strong> 提供可用工具列表，发给大模型。</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">1</div>
+                    <div class="md:w-5/12 order-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <code class="text-xs text-stone-700 block">messages.push({ role: 'system', content: 'You must ReAct...' });</code>
+                        <code class="text-xs text-stone-700 block mt-1">tools = [get_weather_schema];</code>
+                    </div>
+                </div>
+
+                <!-- 步骤 2 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 order-2 md:order-1 bg-stone-800 p-4 rounded-xl border border-stone-700 text-left">
+                        <code class="text-xs text-stone-300 block">"Thought: 我需要查天气..."</code>
+                        <code class="text-xs text-amber-400 block mt-1">tool_calls: [{ name: "get_weather", args: {...} }]</code>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-700 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">2</div>
+                    <div class="md:w-5/12 text-left order-3">
+                        <h4 class="font-bold text-stone-800 text-lg">2. 决策与行动 (LLM)</h4>
+                        <p class="text-sm text-stone-600 mt-1">大模型根据 Prompt 产生 <strong>Thought (Day 1)</strong>，并匹配合适的 Schema，输出严谨的 <strong>Action (Day 1)</strong>。</p>
+                    </div>
+                </div>
+
+                <!-- 步骤 3 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 text-left md:text-right order-2 md:order-1">
+                        <h4 class="font-bold text-stone-800 text-lg">3. 执行与兜底 (Node.js)</h4>
+                        <p class="text-sm text-stone-600 mt-1">Node.js 拦截 Tool Call 并执行本地代码。出错则利用 <strong>Self-Reflection (Day 1)</strong> 生成报错提示词；成功则生成 <strong>Observation (Day 1)</strong>，并重新发起网络请求。</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">3</div>
+                    <div class="md:w-5/12 order-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <code class="text-xs text-stone-700 block">try { result = await getWeather(args); }</code>
+                        <code class="text-xs text-red-600 block mt-1">catch (e) { observation = "执行失败: " + e; }</code>
+                    </div>
+                </div>
+
+                <!-- 步骤 4 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 order-2 md:order-1 bg-stone-800 p-4 rounded-xl border border-stone-700 text-left">
+                        <code class="text-xs text-stone-300 block">"Thought: 拿到数据或报错，总结/重试。"</code>
+                        <code class="text-xs text-emerald-400 block mt-1">"Content: 北京天气晴朗..."</code>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-700 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">4</div>
+                    <div class="md:w-5/12 text-left order-3">
+                        <h4 class="font-bold text-stone-800 text-lg">4. 闭环输出 (LLM)</h4>
+                        <p class="text-sm text-stone-600 mt-1">大模型收到带有 Observation 的完整上下文，跳出循环并最终输出人类可读的答案。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-amber-50 p-5 rounded-xl border border-amber-200 text-center">
+                <p class="text-stone-800 text-sm md:text-base font-medium"><strong>结论：</strong>没有 <strong>Prompt 和 Schema</strong>，ReAct 循环根本无法启动；没有 <strong>ReAct 和反思机制</strong>，Schema 定义得再好也只是一次单向调用。它们在 Node.js 中被一次 <code>while</code> 循环紧紧绑定在了一起。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="day3" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">四、 Day 3 核心：工作流引擎与编排 (Orchestration & DAG)</h2>
+            <p class="text-stone-600 mt-2">当业务变得极其复杂时，单个 <code>while</code> 循环已经无法驾驭。我们需要脱离单纯的 Prompt 工程，引入“图（Graph）”和“状态机（State Machine）”的概念，也就是用代码手写 Dify/Coze 里的连线逻辑。</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- 理论区 -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                    <h3 class="text-lg font-bold text-stone-800 mb-3 border-b border-stone-100 pb-2">1. 告别单体循环，拥抱 DAG</h3>
+                    <p class="text-sm text-stone-600 mb-4">DAG (有向无环图) 允许我们将复杂的任务拆分成一个个独立的节点 (Nodes)。每个节点只负责一件小事（比如只负责查数据库，或只负责总结）。节点之间的箭头 (Edges) 决定了执行的流向。</p>
+                    <h3 class="text-lg font-bold text-stone-800 mb-3 mt-6 border-b border-stone-100 pb-2">2. 三大核心基石 (类 LangGraph 思想)</h3>
+                    <ul class="space-y-3 text-sm text-stone-600">
+                        <li class="flex gap-2"><span class="font-bold text-amber-600">📦 State (状态):</span> 这是一个全局的 JSON 对象。它像一个流水线上的篮子，每个节点都可以往里面放东西或修改东西。</li>
+                        <li class="flex gap-2"><span class="font-bold text-blue-600">⚙️ Nodes (节点):</span> 执行具体任务的函数。比如“意图识别节点”、“天气工具节点”。它们接收 State，执行完后更新 State。</li>
+                        <li class="flex gap-2"><span class="font-bold text-emerald-600">🔀 Edges (边/条件):</span> Node.js 里的 <code>if/else</code> 路由，根据当前的 State 决定下一个该去哪个节点。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 交互式沙盘区 -->
+            <div class="lg:col-span-2 bg-stone-900 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                <div class="px-6 py-4 border-b border-stone-700 flex justify-between items-center bg-stone-800">
+                    <h3 class="text-stone-200 font-bold text-sm tracking-wider uppercase flex items-center gap-2"><span class="text-xl">🎛️</span> DAG 状态机执行沙盘</h3>
+                    <button id="runDagBtn" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors">▶ 点击运行流程</button>
+                </div>
+                
+                <div class="p-6 flex flex-col md:flex-row gap-8 flex-1">
+                    <!-- 左侧：可视化图 -->
+                    <div class="flex-1 flex flex-col items-center justify-center space-y-2 relative">
+                        <div id="node-start" class="w-40 py-2 text-center rounded bg-stone-800 border-2 border-stone-600 text-stone-300 text-sm font-bold transition-all duration-300">USER INPUT (START)</div>
+                        <div class="text-stone-500">⬇</div>
+                        <div id="node-router" class="w-40 py-2 text-center rounded bg-stone-800 border-2 border-stone-600 text-stone-300 text-sm font-bold transition-all duration-300">ROUTER (意图识别)</div>
+                        
+                        <div class="flex w-full justify-center gap-12 mt-2 mb-2">
+                            <div class="text-stone-500 transform -translate-x-4">↙</div>
+                            <div class="text-stone-500 transform translate-x-4">↘</div>
+                        </div>
+                        
+                        <div class="flex w-full justify-center gap-4">
+                            <div id="node-tool" class="w-32 py-2 text-center rounded bg-stone-800 border-2 border-stone-600 text-stone-300 text-xs font-bold transition-all duration-300">WEATHER TOOL</div>
+                            <div id="node-chat" class="w-32 py-2 text-center rounded bg-stone-800 border-2 border-stone-600 text-stone-300 text-xs font-bold transition-all duration-300">GENERAL CHAT</div>
+                        </div>
+
+                        <div class="flex w-full justify-center gap-12 mt-2 mb-2">
+                            <div class="text-stone-500 transform translate-x-4">↘</div>
+                            <div class="text-stone-500 transform -translate-x-4">↙</div>
+                        </div>
+
+                        <div id="node-end" class="w-40 py-2 text-center rounded bg-stone-800 border-2 border-stone-600 text-stone-300 text-sm font-bold transition-all duration-300">SUMMARIZE (END)</div>
+                    </div>
+
+                    <!-- 右侧：State 变化 -->
+                    <div class="w-full md:w-64 bg-stone-950 rounded-lg border border-stone-700 flex flex-col">
+                        <div class="text-xs text-stone-400 p-2 border-b border-stone-800 font-bold">Global State (流水线篮子)</div>
+                        <pre id="stateViewer" class="p-4 text-xs text-emerald-400 code-block flex-1 overflow-auto whitespace-pre-wrap">{
+  "input": "今天北京热吗？",
+  "intent": null,
+  "tool_result": null,
+  "final_answer": null
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 深入拆解：State 篮子 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8 mb-8">
+            <h3 class="text-xl font-bold text-stone-800 mb-6 flex items-center gap-2"><span class="text-2xl">🧺</span> 深入拆解：State（篮子）到底是怎么流转的？</h3>
+            <p class="text-stone-600 text-sm mb-6">节点（Node）之间是不允许直接互相调用和传参的！它们只能和中央的 State 篮子进行交互。这就是数据解耦的魅力。</p>
+            
+            <div class="space-y-4">
+                <!-- 步骤1 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center font-bold shrink-0 mt-1">1</div>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 flex-1">
+                        <div class="font-bold text-stone-800">起点 (Start) 投入问题</div>
+                        <p class="text-sm text-stone-600 mt-1">用户提问“北京今天热吗？”。引擎创建一个空的 State 篮子，把纸条 <code>input: "北京今天热吗？"</code> 扔进去。</p>
+                    </div>
+                </div>
+                <!-- 步骤2 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0 mt-1">2</div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex-1">
+                        <div class="font-bold text-blue-900">Router (意图识别节点) 添加意图</div>
+                        <p class="text-sm text-blue-800 mt-1">Router 节点拿到篮子，看了看纸条，判断这是查天气。它往篮子里塞入新纸条 <code>intent: "weather"</code>，然后把篮子放回传送带。</p>
+                        <div class="text-xs bg-blue-100 text-blue-800 p-2 mt-2 rounded">传送带代码(Edge)检查篮子：发现 <code>intent === 'weather'</code>，把篮子运给 Weather Tool。</div>
+                    </div>
+                </div>
+                <!-- 步骤3 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0 mt-1">3</div>
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex-1">
+                        <div class="font-bold text-emerald-900">Weather Tool (工具节点) 添加结果</div>
+                        <p class="text-sm text-emerald-800 mt-1">工具节点拿到篮子，调用真正的天气 API 查到了 35 度。它往篮子里塞入纸条 <code>tool_result: "35度"</code>。</p>
+                    </div>
+                </div>
+                <!-- 步骤4 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0 mt-1">4</div>
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex-1">
+                        <div class="font-bold text-amber-900">Summarize (总结节点) 输出最终答案</div>
+                        <p class="text-sm text-amber-800 mt-1">总结节点拿到篮子，看到里面有所有线索。它生成并放入最后一张纸条 <code>final_answer: "今天北京35度，很热"</code>。流程结束。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科普：LangGraph -->
+        <div class="bg-indigo-50 rounded-2xl shadow-sm border border-indigo-100 p-6 md:p-8 mb-8">
+            <h3 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2"><span class="text-2xl">🕸️</span> 业界风向标：到底什么是 LangGraph？</h3>
+            <p class="text-sm text-indigo-800 leading-relaxed mb-4">我们在上面讲的这套“图 (Graph) + 状态篮子 (State)” 的架构，正是目前业界最火的 Agent 框架 <strong>LangGraph</strong> 的核心设计哲学。</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-indigo-100">
+                    <div class="font-bold text-indigo-700 mb-1">背景痛点</div>
+                    <p class="text-sm text-stone-600">以前大家用 LangChain 的时候，发现它是直线运行的管道（Chains），没法很好地处理大模型需要反复思考、纠错的“死循环”问题。一出错就全盘崩溃。</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-indigo-100">
+                    <div class="font-bold text-indigo-700 mb-1">LangGraph 的诞生</div>
+                    <p class="text-sm text-stone-600">LangChain 团队开发了 LangGraph，它是一个专门用来构建“有状态的、多参与者”大模型应用的库。它帮你把“节点、边、状态流转”在底层封装好了，你只需要往里面填业务代码即可。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 与传统接口的对比 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+            <h3 class="text-xl font-bold text-stone-800 mb-6 flex items-center gap-2"><span class="text-2xl">⚖️</span> 架构对比：为什么高级 Agent 必须用状态机？</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 传统接口 -->
+                <div class="border border-stone-200 rounded-xl overflow-hidden">
+                    <div class="bg-stone-50 px-4 py-3 border-b border-stone-200 font-bold text-stone-700 flex items-center gap-2">
+                        <span class="text-lg">📦</span> 传统 Node.js 接口 (黑盒直写)
+                    </div>
+                    <div class="p-5 space-y-4 text-sm text-stone-600">
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-stone-800 shrink-0">执行方式:</span>
+                            <p>巨大的嵌套函数，代码从上跑到底。如果中间调 API 失败，整个请求直接挂掉 (500 Error)。</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-stone-800 shrink-0">数据传递:</span>
+                            <p>局部变量通过函数参数层层传递 (<code>funcA(data) -> funcB(data)</code>)。执行到一半很难知道全局状态。</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-stone-800 shrink-0">长程任务:</span>
+                            <p>无法暂停。如果遇到需要“等待人工确认”的节点，传统 HTTP 请求会直接超时。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DAG 状态机 -->
+                <div class="border border-amber-200 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                    <div class="bg-amber-50 px-4 py-3 border-b border-amber-200 font-bold text-amber-800 flex items-center gap-2">
+                        <span class="text-lg">🕸️</span> DAG 状态机引擎 (白盒流转)
+                    </div>
+                    <div class="p-5 space-y-4 text-sm text-stone-600">
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-amber-700 shrink-0">可观测性:</span>
+                            <p>每个 Node 独立。引擎可以精确定位哪个节点报错，并<strong>仅对该节点进行重试</strong>，系统极具鲁棒性。</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-amber-700 shrink-0">全局可见:</span>
+                            <p>所有节点从统一的 Global State 读写数据。随时可以把整个 State 打印出来或存入数据库进行快照备份。</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="font-bold text-amber-700 shrink-0">可中断/恢复:</span>
+                            <p>因为有了 State 快照，流程可以随时暂停（断点挂起），明天读取 State 扔进引擎即可继续无缝执行 (Human-in-the-loop)。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resume" class="scroll-mt-24 mb-16">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">五、 简历亮点提炼</h2>
+                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                    borderColor: 'rgb(217, 119, 6)',
+                    pointBackgroundColor: 'rgb(217, 119, 6)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(217, 119, 6)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                    pointLabels: {
+                        font: { family: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif", size: 12 },
+                        color: '#444'
+                    },
+                    ticks: { display: false, min: 0, max: 100 }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+            }
+        }
+    });
+
+    // --- DAG Simulator Logic ---
+    const runDagBtn = document.getElementById('runDagBtn');
+    const stateViewer = document.getElementById('stateViewer');
+    const nodes = {
+        start: document.getElementById('node-start'),
+        router: document.getElementById('node-router'),
+        tool: document.getElementById('node-tool'),
+        chat: document.getElementById('node-chat'),
+        end: document.getElementById('node-end')
+    };
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const resetNodes = () => {
+        Object.values(nodes).forEach(n => {
+            n.className = n.className.replace(/bg-amber-600|border-amber-400|text-white|scale-105|shadow-\[0_0_15px_rgba\(217,119,6,0\.6\)\]/g, '').trim();
+            if(!n.className.includes('bg-stone-800')) n.classList.add('bg-stone-800', 'border-stone-600', 'text-stone-300');
+        });
+    };
+
+    const highlightNode = (nodeId) => {
+        resetNodes();
+        const n = nodes[nodeId];
+        n.classList.remove('bg-stone-800', 'border-stone-600', 'text-stone-300');
+        n.classList.add('bg-amber-600', 'border-amber-400', 'text-white', 'scale-105', 'shadow-[0_0_15px_rgba(217,119,6,0.6)]');
+    };
+
+    runDagBtn.addEventListener('click', async () => {
+        runDagBtn.disabled = true;
+        runDagBtn.innerText = '执行中...';
+        runDagBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        let globalState = {
+            input: "今天北京热吗？",
+            intent: null,
+            tool_result: null,
+            final_answer: null
+        };
+        const updateState = (newState) => {
+            globalState = { ...globalState, ...newState };
+            stateViewer.innerText = JSON.stringify(globalState, null, 2);
+        };
+
+        updateState({}); // Reset state viewer
+
+        // Step 1: Start
+        highlightNode('start');
+        await sleep(1000);
+
+        // Step 2: Router
+        highlightNode('router');
+        updateState({ intent: "weather_query" });
+        await sleep(1200);
+
+        // Step 3: Branching (Conditional Edge)
+        if (globalState.intent === 'weather_query') {
+            highlightNode('tool');
+            await sleep(800); // simulating API call
+            updateState({ tool_result: { temp: 35, condition: "Sunny" } });
+            await sleep(1200);
+        } else {
+            highlightNode('chat');
+            await sleep(1200);
+        }
+
+        // Step 4: End
+        highlightNode('end');
+        updateState({ final_answer: "北京今天天气晴朗，气温高达35度，非常热，请注意防暑！" });
+        await sleep(1500);
+
+        resetNodes();
+        runDagBtn.disabled = false;
+        runDagBtn.innerText = '▶ 再次运行流程';
+        runDagBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    });
+
+});
+</script>
+</body>
+</html>

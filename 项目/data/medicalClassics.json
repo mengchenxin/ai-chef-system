@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "book": "伤寒论",
+    "chapter": "辨太阳病脉证并治",
+    "section": "桂枝汤证",
+    "formulaName": "桂枝汤",
+    "symptoms": ["头痛", "发热", "汗出", "恶风", "脉浮缓"],
+    "composition": [
+      { "herb": "桂枝", "dosage": "9克" },
+      { "herb": "芍药", "dosage": "9克" },
+      { "herb": "生姜", "dosage": "9克" },
+      { "herb": "大枣", "dosage": "4枚" },
+      { "herb": "炙甘草", "dosage": "6克" }
+    ],
+    "efficacy": "解肌发表，调和营卫",
+    "indication": "外感风寒表虚证。头痛发热，汗出恶风，鼻鸣干呕，苔白不渴，脉浮缓或浮弱。",
+    "description": "桂枝汤为《伤寒论》第一方，被誉为群方之祖。适用于太阳病中风证。"
+  },
+  {
+    "id": 2,
+    "book": "伤寒论",
+    "chapter": "辨太阳病脉证并治",
+    "section": "麻黄汤证",
+    "formulaName": "麻黄汤",
+    "symptoms": ["恶寒", "发热", "无汗", "头痛", "身痛", "脉浮紧"],
+    "composition": [
+      { "herb": "麻黄", "dosage": "9克" },
+      { "herb": "桂枝", "dosage": "6克" },
+      { "herb": "杏仁", "dosage": "9克" },
+      { "herb": "炙甘草", "dosage": "3克" }
+    ],
+    "efficacy": "发汗解表，宣肺平喘",
+    "indication": "外感风寒表实证。恶寒发热，头身疼痛，无汗而喘，舌苔薄白，脉浮紧。",
+    "description": "麻黄汤为峻汗之剂，适用于太阳病伤寒表实证。"
+  },
+  {
+    "id": 3,
+    "book": "伤寒论",
+    "chapter": "辨太阳病脉证并治",
+    "section": "小青龙汤证",
+    "formulaName": "小青龙汤",
+    "symptoms": ["恶寒", "发热", "咳嗽", "喘促", "痰稀", "干呕"],
+    "composition": [
+      { "herb": "麻黄", "dosage": "9克" },
+      { "herb": "芍药", "dosage": "9克" },
+      { "herb": "细辛", "dosage": "3克" },
+      { "herb": "干姜", "dosage": "3克" },
+      { "herb": "炙甘草", "dosage": "6克" },
+      { "herb": "桂枝", "dosage": "6克" },
+      { "herb": "半夏", "dosage": "9克" },
+      { "herb": "五味子", "dosage": "6克" }
+    ],
+    "efficacy": "解表散寒，温肺化饮",
+    "indication": "外寒内饮证。恶寒发热，头身疼痛，无汗，喘咳，痰涎清稀而量多，胸痞，或干呕，或痰饮喘咳，不得平卧，或身体疼重，头面四肢浮肿，舌苔白滑，脉浮。",
+    "description": "小青龙汤适用于外有风寒，内有水饮之证。"
+  },
+  {
+    "id": 4,
+    "book": "伤寒论",
+    "chapter": "辨阳明病脉证并治",
+    "section": "白虎汤证",
+    "formulaName": "白虎汤",
+    "symptoms": ["壮热", "面赤", "烦渴", "汗出", "恶热", "脉洪大"],
+    "composition": [
+      { "herb": "石膏", "dosage": "30克" },
+      { "herb": "知母", "dosage": "9克" },
+      { "herb": "炙甘草", "dosage": "3克" },
+      { "herb": "粳米", "dosage": "9克" }
+    ],
+    "efficacy": "清热生津",
+    "indication": "气分热盛证。壮热面赤，烦渴引饮，汗出恶热，脉洪大有力。",
+    "description": "白虎汤为阳明经证主方，清热生津之力甚强。"
+  },
+  {
+    "id": 5,
+    "book": "伤寒论",
+    "chapter": "辨少阳病脉证并治",
+    "section": "小柴胡汤证",
+    "formulaName": "小柴胡汤",
+    "symptoms": ["往来寒热", "胸胁苦满", "心烦喜呕", "默默不欲饮食", "口苦", "咽干", "目眩"],
+    "composition": [
+      { "herb": "柴胡", "dosage": "12克" },
+      { "herb": "黄芩", "dosage": "9克" },
+      { "herb": "人参", "dosage": "6克" },
+      { "herb": "炙甘草", "dosage": "5克" },
+      { "herb": "半夏", "dosage": "9克" },
+      { "herb": "生姜", "dosage": "9克" },
+      { "herb": "大枣", "dosage": "4枚" }
+    ],
+    "efficacy": "和解少阳",
+    "indication": "伤寒少阳证。往来寒热，胸胁苦满，默默不欲饮食，心烦喜呕，口苦，咽干，目眩，舌苔薄白，脉弦者。",
+    "description": "小柴胡汤为少阳病主方，和解表里之剂。"
+  },
+  {
+    "id": 6,
+    "book": "金匮要略",
+    "chapter": "血痹虚劳病脉证并治",
+    "section": "黄芪桂枝五物汤证",
+    "formulaName": "黄芪桂枝五物汤",
+    "symptoms": ["血痹", "身体不仁", "如风痹状", "肌肤麻木", "脉微涩"],
+    "composition": [
+      { "herb": "黄芪", "dosage": "9克" },
+      { "herb": "芍药", "dosage": "9克" },
+      { "herb": "桂枝", "dosage": "9克" },
+      { "herb": "生姜", "dosage": "18克" },
+      { "herb": "大枣", "dosage": "12枚" }
+    ],
+    "efficacy": "益气温经，和血通痹",
+    "indication": "血痹证。肌肤麻木不仁，脉微涩而紧。",
+    "description": "黄芪桂枝五物汤由桂枝汤去甘草，倍生姜，加黄芪而成，主治血痹。"
+  },
+  {
+    "id": 7,
+    "book": "金匮要略",
+    "chapter": "胸痹心痛短气病脉证并治",
+    "section": "瓜蒌薤白白酒汤证",
+    "formulaName": "瓜蒌薤白白酒汤",
+    "symptoms": ["胸痹", "胸痛", "喘息", "咳唾", "短气"],
+    "composition": [
+      { "herb": "瓜蒌实", "dosage": "12克" },
+      { "herb": "薤白", "dosage": "12克" },
+      { "herb": "白酒", "dosage": "适量" }
+    ],
+    "efficacy": "通阳散结，行气祛痰",
+    "indication": "胸痹之痰浊壅塞证。胸中闷痛，甚至胸痛彻背，喘息咳唾，短气，舌苔白腻，脉沉弦或紧。",
+    "description": "瓜蒌薤白白酒汤为胸痹病主方，通阳散结，行气祛痰。"
+  },
+  {
+    "id": 8,
+    "book": "伤寒论",
+    "chapter": "辨太阴病脉证并治",
+    "section": "理中丸证",
+    "formulaName": "理中丸",
+    "symptoms": ["腹痛", "下利", "呕吐", "不欲饮食", "脘腹冷痛", "四肢不温"],
+    "composition": [
+      { "herb": "人参", "dosage": "6克" },
+      { "herb": "干姜", "dosage": "5克" },
+      { "herb": "白术", "dosage": "6克" },
+      { "herb": "炙甘草", "dosage": "6克" }
+    ],
+    "efficacy": "温中散寒，补气健脾",
+    "indication": "脾胃虚寒证。脘腹疼痛，喜温欲按，自利不渴，畏寒肢冷，呕吐，不欲饮食，舌淡苔白，脉沉细。",
+    "description": "理中丸为太阴病主方，温中散寒，补气健脾。"
+  }
+]

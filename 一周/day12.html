@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>纯 Agent 开发岗特训：核心认知与工程化约束</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chosen Palette: Warm Neutrals (Stone base, Amber/Orange accents) for a calm, professional learning environment -->
+<!-- Application Structure Plan: A single-page scrollable dashboard with sticky navigation. It transforms a text-heavy study guide into interactive learning modules (Radar Chart for paradigm shift, Tabs for reasoning frameworks, Interactive Diagnoser for error handling). This structure facilitates active learning rather than passive reading, allowing users to drill down into specific engineering concepts. -->
+<!-- Visualization & Content Choices: 1. Core Shift -> Radar Chart (Chart.js) -> Compare Traditional vs Agent Dev. 2. Reasoning Paradigms -> Interactive Tabs (HTML/JS) -> Avoid cognitive overload. 3. Error Diagnosis -> Interactive Simulator (HTML/JS) -> Practical application of tool calling concepts. NO SVG/Mermaid used, entirely reliant on standard HTML/CSS and Canvas. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<style>
+.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 350px; } }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+.tab-btn.active { border-bottom-color: #d97706; color: #d97706; font-weight: 600; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.code-block { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+</style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased leading-relaxed">
+
+<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex-shrink-0 flex items-center gap-2">
+                <span class="text-2xl">🧠</span>
+                <span class="font-bold text-xl tracking-tight text-stone-900">AgentDev <span class="text-amber-600">Bootcamp</span></span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#cognition" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">核心认知重塑</a>
+                <a href="#day1" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">推理与决策 (Day 1)</a>
+                <a href="#day2" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">工具工程化 (Day 2)</a>
+                <a href="#collaboration" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">协同闭环</a>
+                <a href="#resume" class="text-stone-600 hover:text-amber-600 transition-colors font-medium">简历提炼</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+    <header class="text-center py-12 bg-white rounded-3xl shadow-sm border border-stone-100">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-4 tracking-tight">纯 Agent 开发岗特训</h1>
+        <p class="text-lg md:text-xl text-stone-500 max-w-3xl mx-auto">从平台使用者到<span class="text-amber-600 font-semibold">底层执行引擎构建者</span>的视角跨越。掌握如何在 Node.js 环境中驾驭大模型的非确定性，构建稳定、可预测的工作流系统。</p>
+    </header>
+
+    <section id="cognition" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">一、 核心认知重塑</h2>
+            <p class="text-stone-600 mt-2">本部分旨在对比传统后端开发与纯 Agent 开发的技能差异。通过下方的雷达图，您可以直观地看到：我们必须剥离简单的“增删改查”和“一问一答”模式，将重心转移到处理模型非确定性、提示词工程以及上下文管理上。</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10 flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1 space-y-4">
+                <h3 class="text-xl font-bold text-stone-800">技能图谱范式转移</h3>
+                <p class="text-stone-600">纯 Agent 开发不再是写普通的 RESTful API 或进行 CRUD 操作。你的核心任务是：<strong class="text-amber-700">驾驭大模型的非确定性（幻觉、格式错误等），构建出稳定、可预测的工作流系统。</strong></p>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <div class="text-sm text-stone-500 font-semibold mb-1">传统后端侧重</div>
+                        <div class="text-stone-800 font-medium">确定性逻辑、数据结构、性能调优</div>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                        <div class="text-sm text-amber-700 font-semibold mb-1">Agent 开发侧重</div>
+                        <div class="text-amber-900 font-medium">容错兜底、提示词约束、流程编排</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 w-full">
+                <div class="chart-container">
+                    <canvas id="skillRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="day1" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">二、 Day 1 核心：智能体的推理与决策机制</h2>
+            <p class="text-stone-600 mt-2">面试官最关心的首要问题：你是否理解 Agent 是如何思考和行动的？本节通过交互式选项卡，详细拆解了工业界最常用的三种推理策略。点击下方标签页探索不同的工作流机制。</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+            <div class="flex border-b border-stone-200 bg-stone-50/50 overflow-x-auto">
+                <button class="tab-btn active px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="react-tab">1. ReAct 范式</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="plan-tab">2. Plan-and-Solve</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium text-stone-500 hover:text-stone-800 border-b-2 border-transparent whitespace-nowrap transition-colors" data-target="reflect-tab">3. Self-Reflection</button>
+            </div>
+
+            <div class="p-6 md:p-10 min-h-[300px]">
+                <div id="react-tab" class="tab-content active">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">🔄</span> ReAct (Reason + Act) 基础运行逻辑</h3>
+                    <p class="text-stone-600 mb-6">工业界最基础的 Agent 运行逻辑。大模型不能直接执行动作，必须先输出思考过程。在 Node.js 中，这本质上是一个被代码控制的 <code>while</code> 循环状态机。</p>
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-center bg-stone-50 p-6 rounded-xl border border-stone-200">
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">1. Thought (思考)</div>
+                            <div class="text-sm text-stone-600">模型分析现状，决定下一步动作。</div>
+                        </div>
+                        <div class="text-stone-400 font-bold hidden md:block">➔</div>
+                        <div class="text-stone-400 font-bold md:hidden">⬇</div>
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">2. Action (行动)</div>
+                            <div class="text-sm text-stone-600">模型输出需要调用的工具和参数。</div>
+                        </div>
+                        <div class="text-stone-400 font-bold hidden md:block">➔</div>
+                        <div class="text-stone-400 font-bold md:hidden">⬇</div>
+                        <div class="text-center p-4 bg-white shadow-sm rounded-lg border border-stone-200 w-full md:w-1/3">
+                            <div class="font-bold text-amber-600 mb-2">3. Observation (观察)</div>
+                            <div class="text-sm text-stone-600">Node.js 执行工具后，返回结果给模型。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="plan-tab" class="tab-content">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">📋</span> Plan-and-Solve (计划与解决)</h3>
+                    <p class="text-stone-600 mb-6">针对宏大或复杂任务的策略。核心动作是**任务拆解 (Task Decomposition)**。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                            <div class="font-bold text-lg text-stone-800 mb-2">阶段一：大模型 Planner</div>
+                            <p class="text-sm text-stone-600 mb-4">让大模型作为 Planner，输出包含多个子任务的结构化 JSON 数组。</p>
+                            <div class="bg-stone-800 text-green-400 p-3 rounded-lg text-xs code-block">
+                                [
+                                  {"step": 1, "task": "搜索相关资料"},
+                                  {"step": 2, "task": "提取关键数据"}
+                                ]
+                            </div>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                            <div class="font-bold text-lg text-stone-800 mb-2">阶段二：Node.js Executor</div>
+                            <p class="text-sm text-stone-600">Node.js 作为 Executor，维护一个任务队列，调度底层的 Worker Agent 逐一执行子任务，汇总结果。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reflect-tab" class="tab-content">
+                    <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2 mb-4"><span class="text-2xl">🛡️</span> Self-Reflection (自我反思与纠错)</h3>
+                    <p class="text-stone-600 mb-6">区分玩具项目与工业级系统的关键：为 Agent 添加系统级异常捕获机制。应对外部 API 崩溃、工具调用超时、大模型参数解析失败等痛点。</p>
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 border-l-4 border-l-amber-500">
+                        <h4 class="font-bold text-amber-900 mb-2">兜底策略 (Node.js 层面)</h4>
+                        <p class="text-amber-800">绝对不要将错误直接抛给用户。Node.js 捕获异常后，将错误信息（Error Stack）或自定义提示词封装成 <code>Observation</code>，附加<strong class="font-bold">“执行失败，请分析原因并重试”</strong>的指令，再次提交给大模型，触发其自我纠正。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="day2" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">三、 Day 2 核心：工具调用 (Tool Calling) 极致工程化</h2>
+            <p class="text-stone-600 mt-2">如果说 ReAct 是 Agent 的大脑，那么 Tool Calling 及其背后的 JSON Schema 就是 Agent 的手脚和数据契约。本节包含了概念对比、代码结构解析以及一个交互式错误诊断器，帮助您理解如何处理模型约束失败的情况。</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+                <h3 class="text-lg font-bold text-stone-800 mb-4 border-b border-stone-100 pb-2">核心控制维度对比</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-100 text-blue-700 p-2 rounded-lg mt-1">🗣️</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Prompt (提示词)</div>
+                            <p class="text-sm text-stone-600">给大模型“洗脑”的自然语言，决定模型<strong>怎么思考</strong>。它是灵活的、逻辑驱动的。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg mt-1">📄</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Schema (数据模式)</div>
+                            <p class="text-sm text-stone-600">代码与大模型的“数据契约”，特指 JSON Schema，决定模型<strong>怎么向 Node.js 输出结构化数据</strong>。它是死板的、严谨的、不可违背的。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 flex flex-col">
+                <h3 class="text-lg font-bold text-stone-800 mb-4 border-b border-stone-100 pb-2">实战：诊断“AI 回答 14”的边界情况</h3>
+                <p class="text-sm text-stone-600 mb-4">在 Node.js 后端调试时，导致崩溃的边界情况通常分为两种。请选择出现的现象查看诊断结果：</p>
+                
+                <select id="diagnosisSelect" class="w-full bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-3 mb-4 outline-none">
+                    <option value="none">-- 请选择报错现象 --</option>
+                    <option value="caseA">现象 A：返回体中只有 content="14"，没有 tool_calls</option>
+                    <option value="caseB">现象 B：触发了 tool_calls，但参数变成了字符串 "14"</option>
+                </select>
+
+                <div id="diagnosisResult" class="flex-1 bg-stone-50 rounded-xl p-4 border border-stone-200 hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-stone-900 rounded-2xl shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-stone-700 flex justify-between items-center bg-stone-800">
+                <h3 class="text-stone-200 font-bold text-sm tracking-wider uppercase">JSON Schema: Tool Definition 实战解剖</h3>
+                <span class="text-stone-400 text-xs">get_current_weather.json</span>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <pre class="text-sm text-stone-300 code-block leading-relaxed">
+{
+  "type": "function",
+  "function": {
+    <span class="text-amber-400">"name"</span>: "get_current_weather", <span class="text-stone-500 ml-4"># 后端的路由 Key，必须唯一且无空格</span>
+    <span class="text-amber-400">"description"</span>: "获取指定城市的天气...", <span class="text-stone-500 ml-4"># 隐形的 Prompt，告诉模型何时调用</span>
+    <span class="text-amber-400">"parameters"</span>: {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "城市或地区的名称"
+        },
+        "unit": {
+          "type": "string",
+          <span class="text-emerald-400">"enum"</span>: ["celsius", "fahrenheit"], <span class="text-stone-500 ml-4"># 枚举防抖：强制模型只能在选项中选择</span>
+          "description": "温度单位"
+        }
+      },
+      <span class="text-emerald-400">"required"</span>: ["location", "unit"] <span class="text-stone-500 ml-4"># 必填项防漏：防止 Node.js 获取 undefined</span>
+    }
+  }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="collaboration" class="scroll-mt-24">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">2.5 核心串联：大脑与手脚的协同闭环</h2>
+            <p class="text-stone-600 mt-2">你问到了最关键的问题：前两天的概念是如何在一起工作的？我们把 Day 1 的“大脑推理”和 Day 2 的“数据契约”融合到一个真实的 Node.js 请求生命周期中。</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10 relative">
+            <div class="absolute left-6 md:left-1/2 top-10 bottom-10 w-1 bg-stone-100 -ml-0.5 md:transform md:-translate-x-1/2"></div>
+            
+            <div class="space-y-12 relative z-10">
+                <!-- 步骤 1 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 text-left md:text-right order-2 md:order-1">
+                        <h4 class="font-bold text-stone-800 text-lg">1. 规则下发 (Node.js)</h4>
+                        <p class="text-sm text-stone-600 mt-1">Node.js 构造请求体：用 <strong>Prompt (Day 2)</strong> 设定 ReAct 思考规则，用 <strong>Schema (Day 2)</strong> 提供可用工具列表，发给大模型。</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">1</div>
+                    <div class="md:w-5/12 order-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <code class="text-xs text-stone-700 block">messages.push({ role: 'system', content: 'You must ReAct...' });</code>
+                        <code class="text-xs text-stone-700 block mt-1">tools = [get_weather_schema];</code>
+                    </div>
+                </div>
+
+                <!-- 步骤 2 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 order-2 md:order-1 bg-stone-800 p-4 rounded-xl border border-stone-700 text-left">
+                        <code class="text-xs text-stone-300 block">"Thought: 我需要查天气..."</code>
+                        <code class="text-xs text-amber-400 block mt-1">tool_calls: [{ name: "get_weather", args: {...} }]</code>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-700 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">2</div>
+                    <div class="md:w-5/12 text-left order-3">
+                        <h4 class="font-bold text-stone-800 text-lg">2. 决策与行动 (LLM)</h4>
+                        <p class="text-sm text-stone-600 mt-1">大模型根据 Prompt 产生 <strong>Thought (Day 1)</strong>，并匹配合适的 Schema，输出严谨的 <strong>Action (Day 1)</strong>。</p>
+                    </div>
+                </div>
+
+                <!-- 步骤 3 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 text-left md:text-right order-2 md:order-1">
+                        <h4 class="font-bold text-stone-800 text-lg">3. 执行与兜底 (Node.js)</h4>
+                        <p class="text-sm text-stone-600 mt-1">Node.js 拦截 Tool Call 并执行本地代码。出错则利用 <strong>Self-Reflection (Day 1)</strong> 生成报错提示词；成功则生成 <strong>Observation (Day 1)</strong>，并重新发起网络请求。</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">3</div>
+                    <div class="md:w-5/12 order-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                        <code class="text-xs text-stone-700 block">try { result = await getWeather(args); }</code>
+                        <code class="text-xs text-red-600 block mt-1">catch (e) { observation = "执行失败: " + e; }</code>
+                    </div>
+                </div>
+
+                <!-- 步骤 4 -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="md:w-5/12 order-2 md:order-1 bg-stone-800 p-4 rounded-xl border border-stone-700 text-left">
+                        <code class="text-xs text-stone-300 block">"Thought: 拿到数据或报错，总结/重试。"</code>
+                        <code class="text-xs text-emerald-400 block mt-1">"Content: 北京天气晴朗..."</code>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-700 text-white font-bold flex items-center justify-center shrink-0 order-1 md:order-2 md:mx-auto border-4 border-white shadow-sm z-10">4</div>
+                    <div class="md:w-5/12 text-left order-3">
+                        <h4 class="font-bold text-stone-800 text-lg">4. 闭环输出 (LLM)</h4>
+                        <p class="text-sm text-stone-600 mt-1">大模型收到带有 Observation 的完整上下文，跳出循环并最终输出人类可读的答案。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-amber-50 p-5 rounded-xl border border-amber-200 text-center">
+                <p class="text-stone-800 text-sm md:text-base font-medium"><strong>结论：</strong>没有 <strong>Prompt 和 Schema</strong>，ReAct 循环根本无法启动；没有 <strong>ReAct 和反思机制</strong>，Schema 定义得再好也只是一次单向调用。它们在 Node.js 中被一次 <code>while</code> 循环紧紧绑定在了一起。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="resume" class="scroll-mt-24 mb-16">
+        <div class="mb-8 border-l-4 border-amber-500 pl-4">
+            <h2 class="text-2xl font-bold text-stone-900">四、 简历亮点提炼</h2>
+            <p class="text-stone-600 mt-2">将前两天的认知转化为专业术语。以下描述贴合纯 Agent 开发岗位要求，可直接用于您的简历优化。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="group bg-white p-6 rounded-2xl border border-stone-200 hover:border-amber-400 hover:shadow-md transition-all cursor-default">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">1</div>
+                    <h3 class="font-bold text-stone-800">底层引擎构建</h3>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed group-hover:text-stone-900 transition-colors">“深入理解 Agent 底层推理逻辑，基于 <strong>ReAct 范式</strong>与 Node.js 构建了高度可控的 <code>Thought-Action-Observation</code> 异步执行引擎。”</p>
+            </div>
+
+            <div class="group bg-white p-6 rounded-2xl border border-stone-200 hover:border-amber-400 hover:shadow-md transition-all cursor-default">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">2</div>
+                    <h3 class="font-bold text-stone-800">复杂任务调度</h3>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed group-hover:text-stone-900 transition-colors">“针对复杂长链路任务，引入 <strong>Plan-and-Solve</strong> 策略进行结构化任务拆解，结合 Node.js 任务队列实现子任务的稳定调度。”</p>
+            </div>
+
+            <div class="group bg-white p-6 rounded-2xl border border-stone-200 hover:border-amber-400 hover:shadow-md transition-all cursor-default">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">3</div>
+                    <h3 class="font-bold text-stone-800">工具规范与数据安全</h3>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed group-hover:text-stone-900 transition-colors">“熟练掌握大模型原生 <strong>Tool/Function Calling</strong> 机制。能够利用高度定制化的 <strong>JSON Schema</strong> 精准定义外部接口规范，结合<strong>枚举约束 (Enum)</strong> 与严格校验，显著降低参数幻觉，保障服务安全。”</p>
+            </div>
+
+            <div class="group bg-white p-6 rounded-2xl border border-stone-200 hover:border-amber-400 hover:shadow-md transition-all cursor-default">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">4</div>
+                    <h3 class="font-bold text-stone-800">系统鲁棒性</h3>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed group-hover:text-stone-900 transition-colors">“设计并实现了基于 <strong>Self-Reflection (自我反思)</strong> 的系统级纠错闭环。在异常时拦截，动态生成纠错 Prompt 引导模型自动重试，极大提升多轮交互的系统鲁棒性。”</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-stone-900 text-stone-400 py-8 text-center text-sm">
+    <p>纯 Agent 开发岗特训互动看板 • 核心认知与工程化约束</p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const ctx = document.getElementById('skillRadarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['数据 CRUD', '逻辑确定性', '提示词工程', '工具调用编排', '动态容错/反思', '上下文记忆管理'],
+            datasets: [
+                {
+                    label: '传统后端开发',
+                    data: [95, 90, 10, 20, 30, 40],
+                    fill: true,
+                    backgroundColor: 'rgba(120, 113, 108, 0.2)',
+                    borderColor: 'rgb(120, 113, 108)',
+                    pointBackgroundColor: 'rgb(120, 113, 108)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(120, 113, 108)'
+                },
+                {
+                    label: '纯 Agent 开发',
+                    data: [20, 40, 90, 95, 85, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                    borderColor: 'rgb(217, 119, 6)',
+                    pointBackgroundColor: 'rgb(217, 119, 6)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(217, 119, 6)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                    pointLabels: {
+                        font: { family: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif", size: 12 },
+                        color: '#444'
+                    },
+                    ticks: { display: false, min: 0, max: 100 }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+            }
+        }
+    });
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    const diagnosisSelect = document.getElementById('diagnosisSelect');
+    const diagnosisResult = document.getElementById('diagnosisResult');
+
+    const diagnoses = {
+        none: '',
+        caseA: `
+            <div class="text-red-700 font-bold mb-2 flex items-center gap-2"><span>🚨</span> 诊断：Prompt 约束失败</div>
+            <p class="text-sm text-stone-700 mb-2">模型绕过了工具，尝试用自己的知识直接回答。因为没有触发 <code>tool_calls</code>，后端代码会因找不到对应字段而崩溃。</p>
+            <div class="bg-white p-3 rounded border border-stone-200 mt-3">
+                <span class="text-xs font-bold text-amber-600 block mb-1">应对策略：</span>
+                <span class="text-sm text-stone-800">强化 System Prompt，强制规定“禁止直接回答，必须调用提取工具”。</span>
+            </div>
+        `,
+        caseB: `
+            <div class="text-red-700 font-bold mb-2 flex items-center gap-2"><span>🚨</span> 诊断：Schema 约束失败 (格式幻觉)</div>
+            <p class="text-sm text-stone-700 mb-2">触发了工具，但原本期待 JSON 对象 <code>{"age": 14}</code> 的地方，收到了单纯的字符串 <code>"14"</code>。JSON 解析失败。</p>
+            <div class="bg-white p-3 rounded border border-stone-200 mt-3">
+                <span class="text-xs font-bold text-amber-600 block mb-1">应对策略：</span>
+                <span class="text-sm text-stone-800">必须使用极其严谨的 JSON Schema 来约束模型输出，开启严谨模式。</span>
+            </div>
+        `
+    };
+
+    diagnosisSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if(val === 'none') {
+            diagnosisResult.classList.add('hidden');
+        } else {
+            diagnosisResult.innerHTML = diagnoses[val];
+            diagnosisResult.classList.remove('hidden');
+        }
+    });
+});
+</script>
+</body>
+</html>

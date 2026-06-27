@@ -1,0 +1,27 @@
+{
+  "name": "ai-chef-system",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0",
+    "@langchain/openai": "^0.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^9.7.2",
+    "mysql2": "^3.22.5",
+    "sequelize": "^6.37.8",
+    "winston": "^3.19.0",
+    "zod": "^3.23.8"
+  }
+}

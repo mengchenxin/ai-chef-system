@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4：多智能体协同架构 (Router & Supervisor)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f5f5f4; }
+    ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+</style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased leading-relaxed">
+
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🧠</span>
+            <span class="font-bold text-xl tracking-tight text-stone-900">Day 4 <span class="text-amber-600">多智能体协同</span></span>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <header class="text-center">
+        <h1 class="text-3xl font-extrabold text-stone-900 mb-4">从单体到系统：Multi-Agent 架构</h1>
+        <p class="text-stone-500">单体 Agent 容易“样样通样样松”。工业级的做法是设立多个专业 Worker，并在之上构建强大的调度路由机制。</p>
+    </header>
+
+    <section>
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+            <h3 class="text-2xl font-bold text-stone-800 mb-6 flex items-center gap-2"><span class="text-3xl">🔀</span> Router (路由分发)：交通警察</h3>
+            <p class="text-sm text-stone-600 mb-6">Router 本身不解决具体问题，它的唯一职责是：<strong>理解用户模糊输入，并将任务（State）丢给对应的专业 Worker Agent。</strong>单向分发，不负责审核结果。</p>
+
+            <div class="space-y-4">
+                <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
+                    <h4 class="font-bold text-stone-800">1. 规则硬路由 (Keyword)</h4>
+                    <p class="text-xs text-stone-600 mt-1">代码层面的正则匹配 (如 `if (input.includes('天气'))`)。速度快零成本，但极其死板，无法理解“穿短袖吗”这种隐式意图。</p>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 relative overflow-hidden shadow-[0_4px_12px_rgba(217,119,6,0.05)]">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">主流推荐</div>
+                    <h4 class="font-bold text-amber-900">2. LLM 意图分类器</h4>
+                    <p class="text-xs text-stone-700 mt-1 mb-2">调用一次小模型做“单选题”。</p>
+                    <code class="text-xs text-amber-800 bg-amber-100 px-2 py-1 rounded block w-fit">Schema: { enum: ['weather_agent', 'chat_agent'] }</code>
+                    <p class="text-xs text-stone-600 mt-2">聪明灵活，结合 Enum 锁死输出选项，完美防止模型乱造 Agent 名字导致系统崩溃。</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                    <h4 class="font-bold text-indigo-900">3. 语义路由 (Semantic Router)</h4>
+                    <p class="text-xs text-stone-600 mt-1">把输入转为向量，去意图向量库里找距离最近的分类。速度远快于调用大模型推理，是大厂高并发网关的高阶玩法。</p>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-stone-900 rounded-xl p-5 border border-stone-800 text-stone-200">
+                <div class="text-amber-400 font-bold text-sm mb-2">💡 Router 高阶面试话术</div>
+                <p class="text-sm text-stone-300 italic">“为了保证路由分发的绝对准确性，我结合了 <strong>Few-Shot Prompting</strong> 和 <strong>JSON Schema 中的 Enum 枚举强约束</strong>，迫使充当 Router 的 LLM 只能输出预设合法的 Agent 名称，有效避免路由层产生格式幻觉导致分发崩溃。”</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="bg-purple-50 rounded-2xl shadow-sm border border-purple-200 p-6 md:p-8">
+            <h3 class="text-2xl font-bold text-purple-900 mb-6 flex items-center gap-2"><span class="text-3xl">👔</span> Supervisor (监督者)：严苛的项目经理</h3>
+            <p class="text-sm text-purple-800 mb-6">与交通警察不同，Supervisor 模式的核心是<strong>“带审核的循环反馈 (开会模式)”</strong>。它不仅派活，还要盯进度、验质量。</p>
+
+            <div class="bg-white p-5 rounded-xl border border-purple-100 mb-6">
+                <h4 class="font-bold text-purple-900 mb-3 border-b border-purple-50 pb-2">工作流拆解</h4>
+                <ol class="text-sm text-stone-700 space-y-3 list-decimal pl-5">
+                    <li><strong>接收大单：</strong> “查苹果财报并写分析文章”。</li>
+                    <li><strong>分配与挂起：</strong> 派给 Search Agent 查数据，Supervisor 等待。</li>
+                    <li><strong class="text-red-600">打回重做 (核心)：</strong> Search Agent 交回数据。Supervisor 审核发现缺少微软对比数据，<strong>直接把任务打回</strong>让其重查。</li>
+                    <li><strong>接力流转：</strong> 数据合格后，将整理好的 State 交给 Writer Agent。</li>
+                    <li><strong>终审输出：</strong> 文章无误，最终返回给用户。</li>
+                </ol>
+            </div>
+
+            <div class="bg-stone-900 rounded-xl p-5 border border-stone-800 text-stone-200">
+                <div class="text-purple-400 font-bold text-sm mb-2">💡 Supervisor 面试话术 (结合 LangGraph)</div>
+                <p class="text-sm text-stone-300 italic">“我采用 LangGraph 实现 Supervisor。将其作为核心条件边(Conditional Edge)节点，Worker 执行完数据必须流回 Supervisor 评估。动态决定是重试(触发循环)还是结束流转，极大提升了长链路业务的确定性。”</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

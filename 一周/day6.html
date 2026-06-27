@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 6：智能体记忆架构与高并发</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f5f5f4; }
+    ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+</style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased leading-relaxed">
+
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🧠</span>
+            <span class="font-bold text-xl tracking-tight text-stone-900">Day 6 <span class="text-indigo-600">记忆架构与并发</span></span>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <header class="text-center">
+        <h1 class="text-3xl font-extrabold text-stone-900 mb-4">拯救大模型的“失忆症”</h1>
+        <p class="text-stone-500">大模型和 HTTP 一样是无状态的。我们必须用工程手段构建多层记忆中枢。</p>
+    </header>
+
+    <section>
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+            <h3 class="text-2xl font-bold text-stone-800 mb-6">工程化三大记忆流派</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                    <h4 class="font-bold text-stone-900 mb-1">1. 临时会话记忆</h4>
+                    <p class="text-xs text-stone-500 font-mono mb-3">类比：内存 (RAM)</p>
+                    <p class="text-sm text-stone-700">死记硬背最近几轮对话，全量发送。<strong class="text-red-500">痛点：聊得越多 Token 消耗呈指数爆炸</strong>，易超出模型容量。</p>
+                </div>
+                
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-900 mb-1">2. 滚动摘要记忆</h4>
+                    <p class="text-xs text-amber-700 font-mono mb-3">类比：追剧“前情提要”</p>
+                    <p class="text-sm text-stone-700">超载后后台唤醒模型，将前几十条废话精炼成 200 字摘要。只发摘要+最新两句话，<strong class="text-emerald-600">极限压缩 Token 成本</strong>。</p>
+                </div>
+
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-200">
+                    <h4 class="font-bold text-teal-900 mb-1">3. 语义长期记忆</h4>
+                    <p class="text-xs text-teal-700 font-mono mb-3">类比：硬盘 / 档案柜</p>
+                    <p class="text-sm text-stone-700">异步提取用户画像存入向量库。下次登录捞取，实现<strong class="text-indigo-600">跨月/跨周期的个性化记忆唤醒</strong>。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+            <h3 class="text-2xl font-bold text-stone-800 mb-6 flex items-center gap-2">🎢 游乐场比喻：秒懂 Cookie、Session 与 Redis</h3>
+            <p class="text-sm text-stone-600 mb-6">既然要存记忆，存哪最安全？存哪不串线？</p>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 p-4 border border-stone-200 rounded-xl">
+                    <div class="text-3xl">🎫</div>
+                    <div>
+                        <h4 class="font-bold text-stone-800">1. Cookie：装在口袋里的纸质门票</h4>
+                        <p class="text-sm text-stone-600 mt-1">存在你的电脑（客户端）里。每次发请求自动带上。但<strong>极其不安全</strong>，谁捡到门票/篡改名字，就能冒充你。所以绝对不能存聊天记录等机密。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 border border-stone-200 rounded-xl">
+                    <div class="text-3xl">🗄️</div>
+                    <div>
+                        <h4 class="font-bold text-stone-800">2. Session：服务台内部的档案柜</h4>
+                        <p class="text-sm text-stone-600 mt-1">你只有一张带编号的手环(SessionID存在Cookie里)。你的真实聊天记录存在服务器内存的档案柜里，很安全！<br><span class="text-red-500 font-semibold">痛点：</span>游乐场太大了有 10 个 Node.js 服务器。A 机器的档案柜，B 机器查不到！而且 Node.js 一重启，内存档案全没。</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 border-l-4 border-l-red-500 bg-red-50 rounded-r-xl">
+                    <div class="text-3xl">🚀</div>
+                    <div>
+                        <h4 class="font-bold text-red-800">3. Redis：全场联网的高速中央储物柜</h4>
+                        <p class="text-sm text-red-900 mt-1">所有 Node.js 服务器都不存记忆。全部拿着你的 SessionID，去这台超级快的中央数据库（Redis）里读写。这完美解决了分布式架构的共享和持久化问题。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="bg-stone-900 rounded-2xl shadow-xl p-6 md:p-8 text-stone-200">
+            <h3 class="text-amber-400 font-bold text-xl mb-4">🔥 面试必杀技：高并发隔离防串线</h3>
+            <p class="text-sm text-stone-400 mb-4">在单线程的 Node.js 中，用全局变量 <code>let history=[]</code> 会导致 1 万用户的聊天记录互串，造成灾难性泄露。</p>
+            
+            <div class="bg-stone-800 p-5 rounded-xl border border-stone-700">
+                <p class="text-sm text-stone-300 italic leading-relaxed">
+                    “在分布式后端中，Agent 必须遵循<strong>无状态设计 (Stateless)</strong>。我们绝不在进程内存中存记忆，而是采用 <strong>Redis 缓存 + Session 隔离机制</strong>：<br><br>
+                    当请求进入 DAG 状态机引擎时，系统在入口节点（Start Node）根据唯一的 sessionId 异步读取 Redis 中的记忆，并注入到本次执行流的 <strong>Global State 篮子</strong> 中。在出口节点（End Node）结束时，将更新后的 State 同步覆盖回 Redis。这彻底杜绝了并发串线，且保障了后端的水平扩容能力。”
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
