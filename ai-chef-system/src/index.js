@@ -1,79 +1,91 @@
+// src/index.js (持久化升级版)
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
-import { HumanMessage } from "@langchain/core/messages";
-import { chefAgentApp } from './agent/chefGraph.js';
-import Recipe, { sequelize } from './models/Recipe.js';
+import { chefAgent } from './agent/chefGraph.js';
+import AgentLog from './models/AgentLog.js'; // 导入刚写的日志模型
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 确认只有 Sequelize 的同步逻辑
-sequelize.sync({ alter: true })
-  .then(() => console.log('✅ MySQL 数据库已连接并同步表结构'))
-  .catch(err => console.error('❌ MySQL 连接失败:', err));
-
-// 2. 连接 MongoDB 数据库 (默认连接本地的 ai_chef 数据库)
-const MONGO_URI = process.env.MONGO_URI;
-app.get('/health', (req, res) => res.send('AI 私厨后端服务正常运行中！'));
-
 app.post('/api/chef/cook/stream', async (req, res) => {
+  console.log("🔥 后端收到请求了！请求内容:", req.body);
   const { prompt } = req.body;
-
-  if (!prompt) return res.status(400).json({ error: "请提供您的需求" });
+  if (!prompt) return res.status(400).json({ error: "请提供需求" });
 
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
+  // 1. 初始化轨迹收集器和最终文本变量
+  const traceCollector = [];
+  let finalResponseText = "";
+
   try {
-    const initialState = { messages: [new HumanMessage(prompt)], recipeContext: "" };
-    const stream = await chefAgentApp.streamEvents(initialState, { version: "v2" });
+    const stream = await chefAgent.stream({ 
+      messages: [{ role: "user", content: prompt }] 
+    });
 
-    // ✨ 核心技巧：准备一个空字符串，用来收集大模型的碎片
-    let fullJsonString = "";
+    for await (const chunk of stream) {
+      const nodeName = Object.keys(chunk)[0];
+      const nodeState = chunk[nodeName];
 
-    for await (const event of stream) {
-      if (event.event === "on_chat_model_stream") {
-        const token = event.data.chunk.content;
-        if (token) {
-          fullJsonString += token; // 把每个字都收集起来
-          res.write(`data: ${JSON.stringify({ text: token })}\n\n`); // 同时实时发给前端
+      if (nodeState && nodeState.messages) {
+        const lastMsg = nodeState.messages[nodeState.messages.length - 1];
+        
+        // 2. 录制轨迹：记录当前节点和消息快照
+        traceCollector.push({
+          node: nodeName,
+          timestamp: new Date().toISOString(),
+          messageType: lastMsg.constructor.name,
+          content: lastMsg.content,
+          tool_calls: lastMsg.tool_calls || null
+        });
+
+        // 3. 业务流式推送逻辑
+        if (lastMsg.tool_calls && lastMsg.tool_calls.length > 0) {
+           res.write(`data: ${JSON.stringify({ text: "\n*(大厨正在翻阅食材数据库...)*\n\n" })}\n\n`);
+        } else if (lastMsg.content) {
+           finalResponseText += lastMsg.content; // 累加最终文本用于存库
+           res.write(`data: ${JSON.stringify({ text: lastMsg.content })}\n\n`);
         }
       }
     }
 
-    // 3. 流式输出结束了，前端已经看到了完整文字。我们现在后台偷偷存数据库
-    try {
-      // 把拼凑完整的 JSON 字符串转回 JS 对象
-      const recipeData = JSON.parse(fullJsonString); 
-      
-      // 实例化一条新的数据库记录
-      const newRecipe = new Recipe({
-        prompt: prompt,
-        ...recipeData // 把菜名、食材、步骤全部解构塞进去
-      });
-      
-      await newRecipe.save(); // 保存到 MongoDB
-      console.log(`✅ 菜谱入库成功: ${recipeData.recipeName}`);
-    } catch (dbErr) {
-      console.error("❌ 菜谱解析或入库失败:", dbErr.message);
-    }
-
-    res.write(`data: [DONE]\n\n`);
-    res.end();
+    // 4. 当流成功结束，异步将完整轨迹写入 MySQL
+    // 使用异步不阻塞前端响应
+    AgentLog.create({
+      userPrompt: prompt,
+      executionTrace: traceCollector, // Sequelize 会自动将其序列化为 JSON 字符串入库
+      finalResponse: finalResponseText
+    }).then(() => {
+      console.log("💾 [MySQL] Agent 推理轨迹已成功持久化归档。");
+    }).catch(err => {
+      console.error("❌ [MySQL] 日志写入失败:", err);
+    });
 
   } catch (error) {
-    console.error("流式输出发生中断:", error);
-    res.write(`data: ${JSON.stringify({ error: "大模型连接中断" })}\n\n`);
+    console.error("Agent 执行出错:", error);
+    res.write(`data: ${JSON.stringify({ text: "\n生成失败，请检查网络或后端服务。\n" })}\n\n`);
+  } finally {
     res.end();
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n🍳 AI 私厨流式后端已启动！`);
-  console.log(`🔗 核心流式接口: http://localhost:${PORT}/api/chef/cook/stream\n`);
-});
+
+import sequelize from './config/database.js'; // 引入刚写好的连接
+
+// 先同步数据库建表，再启动 Web 服务
+sequelize.sync({ alter: true }) // alter: true 会自动根据模型调整表结构，不删数据
+  .then(() => {
+    console.log('💾 [MySQL] 数据库连接成功，表结构同步完成。');
+    app.listen(PORT, () => {
+      console.log(`\n🍳 AI 私厨流式后端已启动！`);
+      console.log(`🔗 核心流式接口: http://localhost:${PORT}/api/chef/cook/stream\n`);
+    });
+  })
+  .catch(err => {
+    console.error('❌ [MySQL] 数据库连接或建表失败:', err);
+  });

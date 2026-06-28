@@ -1,5 +1,20 @@
+# 依赖包
 node_modules/
+
+# 环境变量文件 (绝对不能提交！)
 .env
+.env.local
+.env.*.local
+
+# 日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 操作系统生成文件
 .DS_Store
-logs/
+Thumbs.db
+
+# 生产构建产物（如果有前端打包目录）
 dist/
+build/

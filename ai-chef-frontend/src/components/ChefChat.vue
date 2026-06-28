@@ -1,14 +1,28 @@
 <script setup>
 import { ref } from 'vue';
 
+
 const prompt = ref('');
-const recipeData = ref(null);
+const displayText = ref("");  // 用于接收 AI 返回的纯文本
 const isGenerating = ref(false);
+
 const startCooking = async () => {
-  if (!prompt.value.trim()) return;
+  // if (!prompt.value.trim()) return;
+  
+  console.log("🚀 按钮被点击了！");
+  console.log("📝 当前输入框的内容是:", prompt.value);
+  
+  if (!prompt.value.trim()) {
+      console.warn("⚠️ 检测到输入为空，阻止了请求！");
+      return; 
+  }
+  
   isGenerating.value = true;
-  recipeData.value = null;
-  let fullText = ""; // 用来存储拼装后的 JSON 字符串
+  displayText.value = ""; 
+  console.log("⏳ 准备发送 fetch 请求给后端...");
+
+  isGenerating.value = true;
+  displayText.value = ""; // 每次请求前清空屏幕
 
   try {
     const response = await fetch('http://localhost:3000/api/chef/cook/stream', {
@@ -17,31 +31,39 @@ const startCooking = async () => {
       body: JSON.stringify({ prompt: prompt.value })
     });
 
+    if (!response.ok) throw new Error("网络响应不正常");
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
       
+      const chunk = decoder.decode(value, { stream: true });
+      console.log("📦 收到后端数据块:", chunk); // 核心监控：看看前端到底收到了啥
+      
+      const lines = chunk.split('\n');
       for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const jsonStr = line.replace('data: ', '');
-          if (jsonStr === '[DONE]') continue;
+        if (line.trim().startsWith('data: ')) {
           try {
-            const parsed = JSON.parse(jsonStr);
-            // 核心：把每个小片段里的 text 拼起来
-            if (parsed.text) fullText += parsed.text;
-          } catch (e) {}
+            // 提取 data: 后面的 JSON 字符串
+            const jsonStr = line.replace(/^data:\s*/, '');
+            const event = JSON.parse(jsonStr);
+            
+            if (event.text) {
+              // 将收到的文本追加到屏幕上
+              displayText.value += event.text; 
+            }
+          } catch (e) {
+            console.error("❌ JSON 解析失败:", e, "原始字符串:", line);
+          }
         }
       }
     }
-    // 流式结束后，把拼接好的完整 JSON 字符串转成对象
-    recipeData.value = JSON.parse(fullText);
   } catch (err) {
-    alert("生成失败，请检查后端服务！");
+    console.error("请求报错:", err);
+    displayText.value = "⚠️ 生成失败，请检查后端服务是否开启。";
   } finally {
     isGenerating.value = false;
   }
@@ -54,35 +76,18 @@ const startCooking = async () => {
       <h2>🍳 AI 私厨定制中心</h2>
     </div>
 
-    <textarea v-model="prompt" placeholder="例如：我想吃清淡的健身晚餐..." rows="3"></textarea>
+    <textarea v-model="prompt" placeholder="例如：查询三文鱼营养..." rows="3"></textarea>
     <button @click="startCooking" :disabled="isGenerating">
       {{ isGenerating ? '大厨正在构思食谱...' : '开始定制菜谱' }}
     </button>
 
-    <div v-if="recipeData" class="recipe-card">
+    <div v-if="displayText" class="recipe-card">
       <div class="card-header">
-        <h1>{{ recipeData.recipeName }}</h1>
-        <span class="badge">{{ recipeData.difficulty }}</span>
+        <h3 class="section-title">👨‍🍳 厨师的回复</h3>
       </div>
       
-      <div class="meta-info">
-        <span>⏱️ 准备时间: {{ recipeData.cookingTime }}</span>
-      </div>
-
-      <h3 class="section-title">🛒 精选食材</h3>
-      <div class="ingredients-grid">
-        <div v-for="item in recipeData.ingredients" :key="item.name" class="ingredient-tag">
-          {{ item.name }} <span>{{ item.amount }}</span>
-        </div>
-      </div>
-
-      <h3 class="section-title">👨‍🍳 烹饪步骤</h3>
-      <ol class="steps-list">
-        <li v-for="(step, index) in recipeData.steps" :key="index">{{ step }}</li>
-      </ol>
-
-      <div class="nutrition-tips">
-        <p><strong>💡 营养小贴士：</strong> {{ recipeData.nutritionTips }}</p>
+      <div class="content-box">
+        {{ displayText }}
       </div>
     </div>
   </div>
@@ -90,15 +95,11 @@ const startCooking = async () => {
 
 <style scoped>
 .chat-container { max-width: 650px; margin: 40px auto; padding: 20px; font-family: 'Segoe UI', sans-serif; }
-textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; box-sizing: border-box; }
-button { padding: 10px 20px; cursor: pointer; background: #42b983; color: white; border: none; border-radius: 4px; }
-button:disabled { background: #ccc; }
+textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px;}
+button { width: 100%; padding: 12px; cursor: pointer; background: #42b983; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; transition: background 0.3s;}
+button:disabled { background: #94d3b6; cursor: not-allowed; }
 .recipe-card { border: 1px solid #e1e4e8; padding: 25px; border-radius: 12px; margin-top: 25px; background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.card-header { display: flex; justify-content: space-between; align-items: center; }
-.badge { background: #e1f5fe; color: #0288d1; padding: 4px 10px; border-radius: 15px; font-size: 0.8em; }
-.ingredients-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-.ingredient-tag { background: #f0f2f5; padding: 8px 12px; border-radius: 6px; font-size: 0.9em; }
-.section-title { border-left: 4px solid #42b983; padding-left: 10px; margin: 20px 0 10px; }
-.steps-list li { margin-bottom: 10px; line-height: 1.6; }
-.nutrition-tips { background: #fffde7; padding: 15px; border-radius: 8px; margin-top: 20px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;}
+.section-title { border-left: 4px solid #42b983; padding-left: 10px; margin: 0; }
+.content-box { white-space: pre-wrap; line-height: 1.8; color: #333; font-size: 15px; }
 </style>
